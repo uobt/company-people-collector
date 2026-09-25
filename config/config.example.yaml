@@ -1,0 +1,24 @@
+# Конфигурация company-people-collector.
+# Скопируйте в config/config.yaml и при необходимости измените.
+# Числа ниже — защитные ограничения проекта, а не утверждения о лимитах сайтов;
+# более строгие правила источника имеют приоритет.
+
+defaults:
+  # Обход сайта компании (стадия discover)
+  max_pages_per_site: 5          # страниц на один сайт (главная + about/contact/team...)
+  min_interval_seconds: 3.0      # пауза между запросами на один хост
+  timeout_seconds: 20
+  retries: 2
+  max_requests_per_run: 100      # общий бюджет запросов на запуск
+
+  # Импорт людей
+  max_people_per_company: 100    # технический предел, не утверждение о полноте
+
+# Честный User-Agent с контактом оператора (замените контакт на свой)
+user_agent: "company-people-collector/0.1 (research; contact: set-yours@example.invalid)"
+
+db_path: "data/collector.db"
+output_dir: "data/exports"
+
+# Прокси только явный (переменные окружения не читаются):
+# proxy: "http://127.0.0.1:7890"

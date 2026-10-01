@@ -90,7 +90,7 @@ def test_invalid_input_url(config):
 
 
 def test_profile_links_do_not_become_company(config):
-    html = "<a href='https://www.linkedin.com/in/vishal-bhatia-dedicated-developers/'>founder</a>"
+    html = "<a href='https://www.linkedin.com/in/avery-stone-example-co/'>founder</a>"
     crawler = _crawler(
         {
             "https://dedicateddevelopers.com/robots.txt": ROBOTS_ALLOW,

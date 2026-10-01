@@ -9,18 +9,18 @@ from company_people.normalize import (
 
 def test_profile_canonicalization_strips_trk_and_keeps_host():
     parsed = canonical_linkedin_profile(
-        "https://www.linkedin.com/in/vishal-bhatia-dedicated-developers?trk=org-employees"
+        "https://www.linkedin.com/in/avery-stone-example-co?trk=org-employees"
     )
     assert parsed is not None
-    assert parsed.url == "https://www.linkedin.com/in/vishal-bhatia-dedicated-developers"
-    assert parsed.slug == "vishal-bhatia-dedicated-developers"
+    assert parsed.url == "https://www.linkedin.com/in/avery-stone-example-co"
+    assert parsed.slug == "avery-stone-example-co"
     assert "trk=org-employees" in parsed.raw
 
 
 def test_profile_accepts_localized_host():
-    parsed = canonical_linkedin_profile("https://co.linkedin.com/in/carolinagiraldoh/")
+    parsed = canonical_linkedin_profile("https://co.linkedin.com/in/casey-north/")
     assert parsed is not None
-    assert parsed.url == "https://co.linkedin.com/in/carolinagiraldoh"
+    assert parsed.url == "https://co.linkedin.com/in/casey-north"
     assert parsed.host == "co.linkedin.com"
 
 

@@ -37,13 +37,13 @@ def test_fan_out_one_row_per_employee(tmp_path):
     dd = [r for r in out_rows if r["company_name"] == "Dedicated Developers"]
     assert len(dd) == 4
     assert [r[EMPLOYEE_NAME_COLUMN] for r in dd] == [
-        "Vishal Bhatia",
-        "Aline Ghazarian",
-        "Tina Morgan",
-        "Carolina Giraldo",
+        "Avery Stone",
+        "Jordan Vale",
+        "Riley Quinn",
+        "Casey North",
     ]
-    assert dd[0][EMPLOYEE_URL_COLUMN] == "https://www.linkedin.com/in/vishal-bhatia-dedicated-developers"
-    assert dd[3][EMPLOYEE_URL_COLUMN] == "https://co.linkedin.com/in/carolinagiraldoh"
+    assert dd[0][EMPLOYEE_URL_COLUMN] == "https://www.linkedin.com/in/avery-stone-example-co"
+    assert dd[3][EMPLOYEE_URL_COLUMN] == "https://co.linkedin.com/in/casey-north"
     # исходные колонки компании скопированы в каждую строку без изменений
     for row in dd:
         assert row["country"] == "US" and row["segment"] == "dev agency"
@@ -66,7 +66,7 @@ def test_enriched_csv_structure_and_bom(tmp_path):
     assert lines[0] == (
         "company_name,website_url,country,segment,employee_profile_url,employee_full_name"
     )
-    assert lines[1].startswith("Dedicated Developers,https://dedicateddevelopers.com/,US,dev agency,https://www.linkedin.com/in/vishal")
+    assert lines[1].startswith("Dedicated Developers,https://dedicateddevelopers.com/,US,dev agency,https://www.linkedin.com/in/avery")
     assert len(lines) == 6  # заголовок + 5 строк
 
 
@@ -76,20 +76,20 @@ def test_confirmed_only_excludes_review(tmp_path):
     rows = [
         {
             "website_url": "https://dedicateddevelopers.com/",
-            "profile_url": "https://www.linkedin.com/in/vishal-bhatia-dedicated-developers",
-            "full_name": "Vishal Bhatia",
+            "profile_url": "https://www.linkedin.com/in/avery-stone-example-co",
+            "full_name": "Avery Stone",
             "affiliation": "current_confirmed",
         },
         {
             "website_url": "https://dedicateddevelopers.com/",
-            "profile_url": "https://www.linkedin.com/in/aline-ghazarian-94844727",
-            "full_name": "Aline Ghazarian",
+            "profile_url": "https://www.linkedin.com/in/jordan-vale-94844727",
+            "full_name": "Jordan Vale",
         },
     ]
     import_people(store, rows, run_id, "licensed", "licensed:f.csv")
     out_rows, stats = enrich_base(BASE[:1], store, include_review=False)
     assert len(out_rows) == 1  # только подтверждённый сотрудент
-    assert out_rows[0][EMPLOYEE_NAME_COLUMN] == "Vishal Bhatia"
+    assert out_rows[0][EMPLOYEE_NAME_COLUMN] == "Avery Stone"
     assert stats.employees_attached == 1
 
 

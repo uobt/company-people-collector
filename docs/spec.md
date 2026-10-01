@@ -100,14 +100,16 @@ SQLite: `runs`, `companies`, `company_candidates`, `people`, `company_people`, `
 
 ### 6.1. Пример, предоставленный заказчиком
 
+> **Примечание публичной версии:** имена и ссылки профилей в примере заменены на фиктивные (`example-co`); сохранены формат, трекинг-параметры и локализованный хост.
+
 Следующие пары — **контрольный ожидаемый вывод на учебном снимке/разрешённом импорте**, а не утверждение, что эти люди сейчас работают в компании или что их профили проверены во время написания ТЗ:
 
 | Вход | Профиль из примера | Полное имя из примера |
 |---|---|---|
-| `https://dedicateddevelopers.com/` | `https://www.linkedin.com/in/vishal-bhatia-dedicated-developers?trk=org-employees` | Vishal Bhatia |
-| тот же | `https://www.linkedin.com/in/aline-ghazarian-94844727?trk=org-employees` | Aline Ghazarian |
-| тот же | `https://www.linkedin.com/in/tina-dedicated-developers?trk=org-employees` | Tina Morgan |
-| тот же | `https://co.linkedin.com/in/carolinagiraldoh?trk=org-employees` | Carolina Giraldo |
+| `https://dedicateddevelopers.com/` | `https://www.linkedin.com/in/avery-stone-example-co?trk=org-employees` | Avery Stone |
+| тот же | `https://www.linkedin.com/in/jordan-vale-94844727?trk=org-employees` | Jordan Vale |
+| тот же | `https://www.linkedin.com/in/riley-example-co?trk=org-employees` | Riley Quinn |
+| тот же | `https://co.linkedin.com/in/casey-north?trk=org-employees` | Casey North |
 
 На тестовом импорте с четырьмя разрешёнными записями нормализация создаёт **ровно четыре** пары в порядке источника, если он известен; в `profile_url` нет `?trk=org-employees`, в `profile_url_raw` он сохранён. Локализованный хост `co.linkedin.com` принимается без принудительной замены на `www.linkedin.com`. Сопоставление имён со slug не используется. При наличии подтверждения актуальной связи эти четыре пары попадают в `people.csv`; если учебный импорт его не содержит, они попадают в `review.jsonl` и **не выдаются** за проверенных текущих сотрудников. Компания и статус в `companies.jsonl` отражают фактический путь получения; тестовый импорт не маркируется как live-сбор LinkedIn.
 

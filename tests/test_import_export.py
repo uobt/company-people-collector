@@ -44,12 +44,12 @@ def test_reference_four_pairs_import(tmp_path):
     assert "co.linkedin.com" in hosts
     # без подтверждения текущей связи — review
     assert all(r["confidence"] == "review" for r in rows)
-    # порядок строк = порядку источника
+    # порядок строк = порядку источника (демо-данные фиктивные)
     assert [r["full_name"] for r in rows] == [
-        "Vishal Bhatia",
-        "Aline Ghazarian",
-        "Tina Morgan",
-        "Carolina Giraldo",
+        "Avery Stone",
+        "Jordan Vale",
+        "Riley Quinn",
+        "Casey North",
     ]
 
 
@@ -59,10 +59,10 @@ def test_pairs_format_matches_reference(tmp_path):
     _import_example(store, run_id)
     rows = store.export_people_rows(include_review=True)
     expected = (
-        "https://www.linkedin.com/in/vishal-bhatia-dedicated-developers, Vishal Bhatia; "
-        "https://www.linkedin.com/in/aline-ghazarian-94844727, Aline Ghazarian; "
-        "https://www.linkedin.com/in/tina-dedicated-developers, Tina Morgan; "
-        "https://co.linkedin.com/in/carolinagiraldoh, Carolina Giraldo"
+        "https://www.linkedin.com/in/avery-stone-example-co, Avery Stone; "
+        "https://www.linkedin.com/in/jordan-vale-94844727, Jordan Vale; "
+        "https://www.linkedin.com/in/riley-example-co, Riley Quinn; "
+        "https://co.linkedin.com/in/casey-north, Casey North"
     )
     assert format_pairs(rows) == expected
 
@@ -89,8 +89,8 @@ def test_same_slug_different_hosts_is_one_person(tmp_path):
     store = _store(tmp_path)
     run_id = store.start_run("import-people", {})
     rows = [
-        {"website_url": "https://dedicateddevelopers.com/", "profile_url": "https://www.linkedin.com/in/carolinagiraldoh", "full_name": "Carolina Giraldo"},
-        {"website_url": "https://dedicateddevelopers.com/", "profile_url": "https://co.linkedin.com/in/carolinagiraldoh/", "full_name": "Carolina Giraldo"},
+        {"website_url": "https://dedicateddevelopers.com/", "profile_url": "https://www.linkedin.com/in/casey-north", "full_name": "Casey North"},
+        {"website_url": "https://dedicateddevelopers.com/", "profile_url": "https://co.linkedin.com/in/casey-north/", "full_name": "Casey North"},
     ]
     stats = import_people(store, rows, run_id, "t", "t:dual")
     assert stats.imported == 1 and stats.duplicates == 1
@@ -103,8 +103,8 @@ def test_current_confirmed_gets_high_confidence(tmp_path):
     rows = [
         {
             "website_url": "https://dedicateddevelopers.com/",
-            "profile_url": "https://www.linkedin.com/in/vishal-bhatia-dedicated-developers",
-            "full_name": "Vishal Bhatia",
+            "profile_url": "https://www.linkedin.com/in/avery-stone-example-co",
+            "full_name": "Avery Stone",
             "affiliation": "current_confirmed",
         }
     ]

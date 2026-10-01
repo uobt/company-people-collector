@@ -10,23 +10,23 @@ from company_people.storage import Store
 
 from conftest import FakeTransport
 
-# Структура воспроизводит живую страницу linkedin.com/company/bland-ai (2026-09-25):
+# Структура воспроизводит публичную guest-страницу компании LinkedIn (2026-09-25):
 # одна видимая карточка с h3-именем, размытые "LinkedIn Member" без ссылок,
-# счётчик "120 employees", упоминание человека в тексте поста.
+# счётчик "120 employees", упоминание человека в тексте поста. Данные фиктивные.
 PUBLIC_PAGE = """
 <html><body>
 <section data-test-id="org-page" class="...">
-  <h1>Bland</h1>
+  <h1>ExampleCo</h1>
   <p>120 employees</p><span>51-200 employees</span>
 </section>
 <section class="core-section-container" data-test-id="employees-at">
-  <h2 class="core-section-container__title"> Employees at Bland </h2>
+  <h2 class="core-section-container__title"> Employees at ExampleCo </h2>
   <div class="blurred-overlay">
     <ul class="babybear:pb-4">
       <li>
-        <a href="https://www.linkedin.com/in/leo-de-luna-313226?trk=org-employees" class="base-card">
-          <img alt="Click here to view Leo de Luna\u2019s profile">
-          <div><h3 class="base-main-card__title"> Leo de Luna </h3></div>
+        <a href="https://www.linkedin.com/in/dana-ellis-123456?trk=org-employees" class="base-card">
+          <img alt="Click here to view Dana Ellis\u2019s profile">
+          <div><h3 class="base-main-card__title"> Dana Ellis </h3></div>
         </a>
       </li>
     </ul>
@@ -38,7 +38,7 @@ PUBLIC_PAGE = """
     </div>
   </div>
 </section>
-<p>Bland is FedRAMP certified. CIO <a href="https://www.linkedin.com/in/juan-e-riojas-3a544018?trk=organization_guest_main-feed-card-text">Juan E. Riojas</a> shares why.</p>
+<p>ExampleCo is certified. CIO <a href="https://www.linkedin.com/in/morgan-ford-987654?trk=organization_guest_main-feed-card-text">Morgan Ford</a> shares why.</p>
 </body></html>
 """
 
@@ -48,9 +48,9 @@ def test_parse_public_company_people():
     assert parsed.employee_count_raw == "120"
     assert parsed.hidden_members == 2
     # только видимые карточки секции employees-at; упоминание из поста не попало
-    assert [p.full_name for p in parsed.employees] == ["Leo de Luna"]
+    assert [p.full_name for p in parsed.employees] == ["Dana Ellis"]
     person = parsed.employees[0]
-    assert person.profile_url == "https://www.linkedin.com/in/leo-de-luna-313226"
+    assert person.profile_url == "https://www.linkedin.com/in/dana-ellis-123456"
     assert "trk=org-employees" in person.raw
 
 
@@ -77,27 +77,27 @@ def test_collect_company_people_end_to_end(config, tmp_path):
     store = Store(tmp_path / "db.sqlite")
     run_id = store.start_run("collect", {})
     store.upsert_company_discovery(
-        "bland.ai", "https://bland.ai/", "Bland",
-        "https://www.linkedin.com/company/bland-ai", "https://bland.ai/",
+        "exampleco.com", "https://exampleco.com/", "ExampleCo",
+        "https://www.linkedin.com/company/example-co", "https://exampleco.com/",
         "found", "пилот", None, run_id,
     )
     crawler = PoliteCrawler(
-        FakeTransport({"https://www.linkedin.com/company/bland-ai": PUBLIC_PAGE}),
+        FakeTransport({"https://www.linkedin.com/company/example-co": PUBLIC_PAGE}),
         config,
         resolver=lambda h: True,
     )
     summary = collect_company_people(
-        store, crawler, "bland.ai",
-        "https://www.linkedin.com/company/bland-ai", run_id,
+        store, crawler, "exampleco.com",
+        "https://www.linkedin.com/company/example-co", run_id,
         max_people=100,
     )
     assert summary["status"] == "partial"
     assert summary["saved"] == 1
     assert summary["employee_count_raw"] == "120"
     assert summary["hidden"] == 2
-    people = store.company_people_rows("bland.ai")
+    people = store.company_people_rows("exampleco.com")
     assert len(people) == 1
-    assert people[0]["full_name"] == "Leo de Luna"
+    assert people[0]["full_name"] == "Dana Ellis"
     assert people[0]["confidence"] == "medium"
     # robots.txt LinkedIn не запрашивался: канал работает с осознанным override
     assert all("robots.txt" not in u for u in crawler.transport.requests)
